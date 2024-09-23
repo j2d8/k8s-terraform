@@ -143,6 +143,7 @@ resource "helm_release" "karpenter" {
 }
 
 # Karpenter EC2NodeClass and NodePool
+# https://karpenter.sh/v0.32/concepts/nodeclasses/
 resource "kubectl_manifest" "karpenter_ec2nodeclass" {
   yaml_body = <<-YAML
   apiVersion: karpenter.k8s.aws/v1beta1
@@ -169,7 +170,7 @@ resource "kubectl_manifest" "karpenter_ec2nodeclass" {
 // karpenter nodepool for x86_64 instances
 resource "kubectl_manifest" "karpenter_nodepool_x86" {
   yaml_body = <<-YAML
-  apiVersion: karpenter.sh/v1
+  apiVersion: karpenter.sh/v1beta1
   kind: NodePool
   metadata:
     name: x86processors
@@ -177,7 +178,7 @@ resource "kubectl_manifest" "karpenter_nodepool_x86" {
     template:
       spec:
         nodeClassRef:
-          group: karpenter.k8s.aws
+          group: karpenter.sh/v1beta1
           kind: EC2NodeClass
           name: default
         tolerations:
@@ -210,7 +211,7 @@ resource "kubectl_manifest" "karpenter_nodepool_x86" {
 // karpenter nodepool for arm64 instances
 resource "kubectl_manifest" "karpenter_nodepool_arm" {
   yaml_body = <<-YAML
-  apiVersion: karpenter.sh/v1
+  apiVersion: karpenter.sh/v1beta1
   kind: NodePool
   metadata:
     name: armprocessors
@@ -218,7 +219,7 @@ resource "kubectl_manifest" "karpenter_nodepool_arm" {
     template:
       spec:
         nodeClassRef:
-          group: karpenter.k8s.aws
+          group: karpenter.sh/v1beta1
           kind: EC2NodeClass
           name: default
         tolerations:
@@ -251,7 +252,7 @@ resource "kubectl_manifest" "karpenter_nodepool_arm" {
 // karpenter nodepool for g4dn instances
 resource "kubectl_manifest" "karpenter_nodepool_gpu" {
   yaml_body = <<-YAML
-  apiVersion: karpenter.sh/v1
+  apiVersion: karpenter.sh/v1beta1
   kind: NodePool
   metadata:
     name: gpuslicing
@@ -262,7 +263,7 @@ resource "kubectl_manifest" "karpenter_nodepool_gpu" {
           compute: models
           gpu-type: nvidia
         nodeClassRef:
-          group: karpenter.k8s.aws
+          group: karpenter.sh/v1beta1
           kind: EC2NodeClass
           name: default
         tolerations:
